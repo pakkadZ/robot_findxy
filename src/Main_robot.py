@@ -24,7 +24,7 @@ DEFAULT_CONFIG = {
     "FLIP_IMAGE": True,
     "MAIN_LABEL": "grey",
     "HEAD_LABEL": "head",
-    "CAMERA_INDEX": 2
+    "CAMERA_INDEX": 0
 }
 
 # Direction rules for alignment
@@ -316,9 +316,13 @@ class ConfigurationWindow:
         tb.Button(self.window, text="Apply", bootstyle="success", command=self.apply_settings).grid(row=8, column=0, pady=10)
         tb.Button(self.window, text="Reset to Default", bootstyle="secondary", command=self.reset_default).grid(row=8, column=1, pady=10)
         
-        # Warning
-        tb.Label(self.window, text="Please restart the program after changing camera index.", 
-                foreground="red").grid(row=9, column=0, columnspan=3, pady=5)
+        tb.Label(
+            self.window, 
+            text="เปิด->ปิดโปรแกรมใหม่ทุกครั้งที่กด apply", 
+            foreground="red",
+            font=("Tahoma", 20)
+        ).grid(row=9, column=0, columnspan=3, pady=5)
+
     
     def browse_model(self):
         """Browse for YOLO model file"""
