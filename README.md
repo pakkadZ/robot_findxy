@@ -29,6 +29,7 @@ pip install -r requirements.txt
 ```
 # ✅ 6. รันโปรแกรม
 ```bash
+.venv\Scripts\activate
 python src/Main_robot.py
 ```
 
