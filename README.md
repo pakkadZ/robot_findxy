@@ -31,3 +31,16 @@ pip install -r requirements.txt
 ```bash
 python src/Main_robot.py
 ```
+
+
+# ✅ สำหรับการก๊อปผ่านflashdrive 
+```bash
+cd robot_findxy
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+รันโปรแกรม
+```bash
+python src/Main_robot.py
+```
