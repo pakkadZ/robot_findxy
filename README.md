@@ -1,27 +1,28 @@
 # ✅ 1. โคลนโปรเจกต์จาก GitHub
-
+```bash
 git clone https://github.com/pakkadZ/robot_findxy.git
-
-cd robot_findxy
-
-# ✅ 2. ตรวจสอบ Python เวอร์ชัน (ควรเป็น Python 3.10)
+```
+# ✅ 2. ตรวจสอบ Python เวอร์ชัน (ต้องเป็น Python 3.10.4)
+```bash
 python --version
-
+```
+## 2.1 python 3.10.4
+```bash
+https://www.python.org/downloads/release/python-3104/
+```
 # ✅ 3. สร้าง Virtual Environment
+```bash
 python -m venv .venv
-
-# ✅ 4. เปิดใช้งาน Virtual Environment
-# 👉 Windows:
+```
+# ✅ 4. เปิดใช้งาน Virtual Environment (ทำในcmdเท่านั้น)
+```bash
 .venv\Scripts\activate
-
-# 👉 macOS / Linux:
-source .venv/bin/activate
-
+```
 # ✅ 5. ติดตั้งไลบรารีทั้งหมด
+```bash
 pip install -r requirements.txt
-
-# ✅ 6. สร้างโฟลเดอร์ (ถ้ายังไม่มี)
-mkdir -p ai pic src runs/detect/train
-
-# ✅ 7. รันโปรแกรม
+```
+# ✅ 6. รันโปรแกรม
+```bash
 python src/Main_robot.py
+```
