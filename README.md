@@ -11,12 +11,12 @@ python --version
 https://www.python.org/downloads/release/python-3104/
 ```
 
-```bash
-cd robot_findxy
-```
+
 
 # ✅ 3. สร้าง Virtual Environment
+
 ```bash
+cd robot_findxy
 python -m venv .venv
 ```
 # ✅ 4. เปิดใช้งาน Virtual Environment (ทำในcmdเท่านั้น)
