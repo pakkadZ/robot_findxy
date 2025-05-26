@@ -11,7 +11,10 @@ python --version
 https://www.python.org/downloads/release/python-3104/
 ```
 
+```bash
 cd robot_findxy
+```
+
 # ✅ 3. สร้าง Virtual Environment
 ```bash
 python -m venv .venv
