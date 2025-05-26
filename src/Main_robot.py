@@ -227,19 +227,22 @@ class AlignmentController:
         self.robot.send("stopz")
         self.command_repeat()
     
-    def handle_head_alignment(self, main_cy, head_cy):
-        """Handle head (rz) alignment"""
+    def handle_head_alignment(self, main_axis, head_axis):
+        """Handle head (rz) alignment based on selected axis"""
         if not self.robot.is_connected:
             return
-            
-        if head_cy < main_cy - 1:
+
+        delta = head_axis - main_axis
+
+        if delta < -1:
             self.robot.send("rzP")
-        elif head_cy > main_cy + 1:
+        elif delta > 1:
             self.robot.send("rzM")
         else:
             self.robot.send("stopc")
             self.is_adjusting_ry = False
             self.adjust_position = False
+
     
     def command_repeat(self):
         """Handle repeat mode logic"""
@@ -322,6 +325,8 @@ class ConfigurationWindow:
         path = filedialog.askopenfilename(filetypes=[("YOLO Model", "*.pt")])
         if path:
             self.model_path_var.set(path)
+            self.window.lift() 
+            self.window.focus_force()
     
     def apply_settings(self):
         """Apply configuration changes"""
@@ -334,13 +339,20 @@ class ConfigurationWindow:
             "HEAD_LABEL": self.head_label_var.get(),
             "CAMERA_INDEX": self.cam_var.get()
         })
-        
+
         with open(CONFIG_FILE, "w") as f:
             json.dump(self.config, f, indent=4)
         
-        messagebox.showinfo("Settings Applied", "Configuration saved and applied successfully.")
+        # 👇 โหลด YOLO model ใหม่
+        try:
+            self.model = YOLO(self.config["YOLO_MODEL"])
+            messagebox.showinfo("Settings Applied", "Configuration saved and model reloaded.")
+        except Exception as e:
+            messagebox.showerror("Model Error", f"Failed to load model: {e}")
+            return
+        
         self.window.destroy()
-    
+
     def reset_default(self):
         """Reset to default configuration"""
         self.ip_var.set(DEFAULT_CONFIG["IP_ROBOT"])
@@ -409,7 +421,18 @@ class MainApplication:
         mode_repeat = tk.IntVar(value=1)
         tb.Radiobutton(self.mode_repeat_frame, text="ทีละชิ้น", variable=mode_repeat, value=1).pack(anchor="w")
         tb.Radiobutton(self.mode_repeat_frame, text="ทุกชิ้น", variable=mode_repeat, value=2).pack(anchor="w")
-    
+
+        # RZ axis selection
+        self.rz_axis_frame = tb.LabelFrame(self.mode_container, text="เทียบแกนเพื่อปรับ RZ", padding=10)
+        self.rz_axis_frame.pack(side=LEFT, expand=True, fill=BOTH, padx=5)
+
+        global rz_axis_var
+        rz_axis_var = tk.StringVar(value="cy")
+        tb.Radiobutton(self.rz_axis_frame, text="ใช้แกน Y (cy)", variable=rz_axis_var, value="cy").pack(anchor="w")
+        tb.Radiobutton(self.rz_axis_frame, text="ใช้แกน X (cx)", variable=rz_axis_var, value="cx").pack(anchor="w")
+
+
+
     def setup_control_buttons(self):
         """Setup control buttons"""
         self.btn_frame = tb.Frame(self.mainframe)
@@ -492,7 +515,12 @@ class MainApplication:
                 hcx, hcy, *_ = head_obj
                 centered_hcx = hcx - img.shape[1] // 2
                 centered_hcy = -(hcy - img.shape[0] // 2)
-                self.alignment_controller.handle_head_alignment(centered_cy, centered_hcy)
+
+                self.alignment_controller.handle_head_alignment(
+                    centered_cy if rz_axis_var.get() == "cy" else centered_cx,
+                    centered_hcy if rz_axis_var.get() == "cy" else centered_hcx
+                )
+
 
             self.label_all.config(
                 text=f"X: {centered_cx}   Y: {centered_cy}   " +
@@ -508,7 +536,7 @@ class MainApplication:
             if (not self.alignment_controller.adjust_position and 
                 not self.alignment_controller.has_aligned_once and 
                 self.robot_controller.is_connected):
-                self.alignment_controller.send_alignment_commands(centered_cx, centered_cy, center_distance)
+                self.alignment_controller.send_alignment_commands(centered_cx, centered_cy)
         else:
             self.label_all.config(text="X: -   Y: -   rx: -   ry: -")
     
