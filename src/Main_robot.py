@@ -483,6 +483,10 @@ class MainApplication:
         """Handle robot disconnection"""
         self.robot_controller.disconnect()
         self.btn_connect.config(state='normal')
+        # --- Reset alignment state ---
+        self.alignment_controller.reset_alignment()
+        # --- Reset UI label ---
+        self.label_all.config(text="X: -   Y: -   rx: -   ry: -")
         messagebox.showinfo("Connection Closed", "The connection has been closed.")
     
     def again_pressed(self):
